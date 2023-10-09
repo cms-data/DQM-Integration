@@ -13,45 +13,21 @@ run356383_ls0010_streamDQMOnlineBeamspot_sm-c2a11-43-01.jsn
 run356383_ls0020_streamDQMOnlineBeamspot_sm-c2a11-43-01.dat
 run356383_ls0020_streamDQMOnlineBeamspot_sm-c2a11-43-01.jsn
 ```
-   * the `ecalgpu_dqm_sourceclient-live_cfg.py`, `hcalgpu_dqm_sourceclient-live_cfg.py` and `pixelgpu_dqm_sourceclient-live_cfg.py` read the `streamDQMGPUvsCPU` streamer files that are from run 369956 ([OMS link](https://cmsoms.cern.ch/cms/runs/report?cms_run=369956&cms_run_sequence=GLOBAL-RUN)):
+   * the `ecalgpu_dqm_sourceclient-live_cfg.py`, `hcalgpu_dqm_sourceclient-live_cfg.py` and `pixelgpu_dqm_sourceclient-live_cfg.py` read the `streamDQMGPUvsCPU` streamer files that are from run 373710 (from 2023 ppRef run [OMS link](https://cmsoms.cern.ch/cms/runs/report?cms_run=373710&cms_run_sequence=GLOBAL-RUN)):
 ```
-run369956_ls0001_streamDQMGPUvsCPU_sm-c2a11-43-01.dat
-run369956_ls0001_streamDQMGPUvsCPU_sm-c2a11-43-01.jsn
-run369956_ls0002_streamDQMGPUvsCPU_sm-c2a11-43-01.dat
-run369956_ls0002_streamDQMGPUvsCPU_sm-c2a11-43-01.jsn
-run369956_ls0003_streamDQMGPUvsCPU_sm-c2a11-43-01.dat
-run369956_ls0003_streamDQMGPUvsCPU_sm-c2a11-43-01.jsn
-run369956_ls0004_streamDQMGPUvsCPU_sm-c2a11-43-01.dat
-run369956_ls0004_streamDQMGPUvsCPU_sm-c2a11-43-01.jsn
-run369956_ls0005_streamDQMGPUvsCPU_sm-c2a11-43-01.dat
-run369956_ls0005_streamDQMGPUvsCPU_sm-c2a11-43-01.jsn
-run369956_ls0006_streamDQMGPUvsCPU_sm-c2a11-43-01.dat
-run369956_ls0006_streamDQMGPUvsCPU_sm-c2a11-43-01.jsn
-run369956_ls0007_streamDQMGPUvsCPU_sm-c2a11-43-01.dat
-run369956_ls0007_streamDQMGPUvsCPU_sm-c2a11-43-01.jsn
-run369956_ls0008_streamDQMGPUvsCPU_sm-c2a11-43-01.dat
-run369956_ls0008_streamDQMGPUvsCPU_sm-c2a11-43-01.jsn
-run369956_ls0009_streamDQMGPUvsCPU_sm-c2a11-43-01.dat
-run369956_ls0009_streamDQMGPUvsCPU_sm-c2a11-43-01.jsn
-run369956_ls0011_streamDQMGPUvsCPU_sm-c2a11-43-01.dat
-run369956_ls0011_streamDQMGPUvsCPU_sm-c2a11-43-01.jsn
-run369956_ls0012_streamDQMGPUvsCPU_sm-c2a11-43-01.dat
-run369956_ls0012_streamDQMGPUvsCPU_sm-c2a11-43-01.jsn
-run369956_ls0013_streamDQMGPUvsCPU_sm-c2a11-43-01.dat
-run369956_ls0013_streamDQMGPUvsCPU_sm-c2a11-43-01.jsn
-run369956_ls0014_streamDQMGPUvsCPU_sm-c2a11-43-01.dat
-run369956_ls0014_streamDQMGPUvsCPU_sm-c2a11-43-01.jsn
-run369956_ls0015_streamDQMGPUvsCPU_sm-c2a11-43-01.dat
-run369956_ls0015_streamDQMGPUvsCPU_sm-c2a11-43-01.jsn
-run369956_ls0016_streamDQMGPUvsCPU_sm-c2a11-43-01.dat
-run369956_ls0016_streamDQMGPUvsCPU_sm-c2a11-43-01.jsn
-run369956_ls0017_streamDQMGPUvsCPU_sm-c2a11-43-01.dat
-run369956_ls0017_streamDQMGPUvsCPU_sm-c2a11-43-01.jsn
-run369956_ls0018_streamDQMGPUvsCPU_sm-c2a11-43-01.dat
-run369956_ls0018_streamDQMGPUvsCPU_sm-c2a11-43-01.jsn
-run369956_ls0019_streamDQMGPUvsCPU_sm-c2a11-43-01.dat
-run369956_ls0019_streamDQMGPUvsCPU_sm-c2a11-43-01.jsn
+run373710_ls0051_streamDQMGPUvsCPU_sm-c2a11-43-01.dat
+run373710_ls0051_streamDQMGPUvsCPU_sm-c2a11-43-01.jsn
+run373710_ls0053_streamDQMGPUvsCPU_sm-c2a11-43-01.dat
+run373710_ls0053_streamDQMGPUvsCPU_sm-c2a11-43-01.jsn
+run373710_ls0055_streamDQMGPUvsCPU_sm-c2a11-43-01.dat
+run373710_ls0055_streamDQMGPUvsCPU_sm-c2a11-43-01.jsn
 ```
+   * the `sistrip_approx_dqm_sourceclient-live_cfg.py` reads the `streamDQM` streamer files that are from run 362321 (from 2022 HI run, [OMS link](https://cmsoms.cern.ch/cms/runs/report?cms_run=362321&cms_run_sequence=GLOBAL-RUN), though they have been re-HLT'ed, see for more details at [CMSHLT-2884](https://its.cern.ch/jira/browse/CMSHLT-2884)):
+```
+run362321_ls0231_streamDQM_pid738580_sm-c2a11-43-01.dat
+run362321_ls0231_streamDQM_pid738580_sm-c2a11-43-01.jsn
+
+``` 		
 
 ## Possible extenstions
 
