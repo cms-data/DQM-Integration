@@ -15,14 +15,10 @@ Currently the unitTest that make use of input streamer files are:
    ```
 
    * an older run (356383) is also available, but it's missing the information from FED 1022, as detailed in [DQM-Integration/Issues#3](https://github.com/cms-data/DQM-Integration/issues/3)
-* the `ecalgpu_dqm_sourceclient-live_cfg.py`, `hcalgpu_dqm_sourceclient-live_cfg.py` and `pixelgpu_dqm_sourceclient-live_cfg.py` read the `streamDQMGPUvsCPU` streamer files that are from run 373710 (from 2023 ppRef run [OMS link](https://cmsoms.cern.ch/cms/runs/report?cms_run=373710&cms_run_sequence=GLOBAL-RUN)):
+* the `ecalgpu_dqm_sourceclient-live_cfg.py`, `hcalgpu_dqm_sourceclient-live_cfg.py` and `pixelgpu_dqm_sourceclient-live_cfg.py` read the `streamDQMGPUvsCPU` streamer files that are from run 380649 (from Run2024D pp run [OMS link](https://cmsoms.cern.ch/cms/runs/report?cms_run=380649&cms_run_sequence=GLOBAL-RUN)):
    ```
-   run373710_ls0051_streamDQMGPUvsCPU_sm-c2a11-43-01.dat
-   run373710_ls0051_streamDQMGPUvsCPU_sm-c2a11-43-01.jsn
-   run373710_ls0053_streamDQMGPUvsCPU_sm-c2a11-43-01.dat
-   run373710_ls0053_streamDQMGPUvsCPU_sm-c2a11-43-01.jsn
-   run373710_ls0055_streamDQMGPUvsCPU_sm-c2a11-43-01.dat
-   run373710_ls0055_streamDQMGPUvsCPU_sm-c2a11-43-01.jsn
+   run380649_ls0522_streamDQMGPUvsCPU_sm-c2a11-43-01.dat
+   run380649_ls0522_streamDQMGPUvsCPU_sm-c2a11-43-01.jsn
    ```
 * the `sistrip_approx_dqm_sourceclient-live_cfg.py` reads the `streamDQM` streamer files that are from run 362321 (from 2022 HI run, [OMS link](https://cmsoms.cern.ch/cms/runs/report?cms_run=362321&cms_run_sequence=GLOBAL-RUN), though they have been re-HLT'ed, see for more details at [CMSHLT-2884](https://its.cern.ch/jira/browse/CMSHLT-2884)):
    ```
