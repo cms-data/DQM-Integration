@@ -15,12 +15,11 @@ Currently the unitTest that make use of input streamer files are:
    ```
   run381594/run381594_ls1000_streamDQMGPUvsCPU_pid1801423.dat
   run381594/run381594_ls1000_streamDQMGPUvsCPU_pid1801423.jsn
-
    ```
-* the `sistrip_approx_dqm_sourceclient-live_cfg.py` reads the `streamDQM` streamer files that are from run 362321 (from 2022 HI run, [OMS link](https://cmsoms.cern.ch/cms/runs/report?cms_run=362321&cms_run_sequence=GLOBAL-RUN), though they have been re-HLT'ed, see for more details at [CMSHLT-2884](https://its.cern.ch/jira/browse/CMSHLT-2884)):
+* the `sistrip_approx_dqm_sourceclient-live_cfg.py` reads the `streamDQM` streamer files regenerated from run 362321 (from 2022 HI run, [OMS link](https://cmsoms.cern.ch/cms/runs/report?cms_run=362321&cms_run_sequence=GLOBAL-RUN), though they have been re-HLT'ed, see for more details at [CMSHLT-2884](https://its.cern.ch/jira/browse/CMSHLT-2884)):
    ```
-   run362321_ls0231_streamDQM_pid738580_sm-c2a11-43-01.dat
-   run362321_ls0231_streamDQM_pid738580_sm-c2a11-43-01.jsn
+   run362321/run362321_ls0231_streamHIDQM_pid1816953.dat
+   run362321/run362321_ls0231_streamHIDQM_pid1816953.jsn
    ```
 
 ## Recipe to regenerate Streamer files (when streamer layout gets broken)
@@ -66,6 +65,58 @@ process.options.wantSummary = True
 edmConfigDump "${tmpfile}" > hlt.py
 
 cmsRun hlt.py &> hlt.log
+```
+
+While the following script for the HIon data:
+```bash
+#!/bin/bash -ex
+
+# cmsrel CMSSW_14_0_9_MULTIARCHS
+# cd CMSSW_14_0_9_MULTIARCHS/src
+# cmsenv
+# scram b
+
+# run 362321, LSs 231-232
+INPUTFILE=root://eoscms.cern.ch//eos/cms/store/user/cmsbuild//store/hidata/HIRun2022A/HITestRaw0/RAW/v1/000/362/321/00000/f467ee64-fc64-47a6-9d8a-7ca73ebca2bd.root
+
+HLTMENU=/dev/CMSSW_14_0_0/HIon/V141
+
+rm -rf run362321*
+
+# run on 100 events of LS 231, with 100 events per input file
+convertToRaw -f 100 -l 100 -r 362321:231 -s rawDataRepacker -o . -- "${INPUTFILE}"
+
+tmpfile=$(mktemp)
+hltConfigFromDB --configName "${HLTMENU}" > "${tmpfile}"
+sed -i 's|process = cms.Process( "HLT" )|from Configuration.Eras.Era_Run3_cff import Run3\nprocess = cms.Process( "HLT", Run3 )|g' "${tmpfile}"
+cat <<@EOF >> "${tmpfile}"
+process.load('run362321_cff')
+process.hltOnlineBeamSpotESProducer.timeThreshold = int(1e6)
+
+# override the GlobalTag, connection string and pfnPrefix
+from Configuration.AlCa.GlobalTag import GlobalTag as customiseGlobalTag
+process.GlobalTag = customiseGlobalTag(
+    process.GlobalTag,
+    globaltag = "140X_dataRun3_HLT_v3",
+    conditions = "L1Menu_CollisionsHeavyIons2023_v1_1_5_xml,L1TUtmTriggerMenuRcd,frontier://FrontierProd/CMS_CONDITIONS,,9999-12-31 23:59:59.000"
+)
+
+# run the Full L1T emulator, then repack the data into a new RAW collection, to be used by the HLT
+from HLTrigger.Configuration.CustomConfigs import L1REPACK
+process = L1REPACK(process, "uGT")
+
+# to run without any HLT prescales
+del process.PrescaleService
+
+# # to run using the same HLT prescales as used online in LS 231
+# process.PrescaleService.forceDefault = True
+@EOF
+edmConfigDump "${tmpfile}" > hlt.py
+
+cmsRun hlt.py &> hlt.log
+
+# remove input files to save space
+rm -f run362321/run362321_ls0*_index*.*
 ```
 
 ## Possible extenstions
