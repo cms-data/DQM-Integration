@@ -1,0 +1,16 @@
+{
+   "data" : [
+      "300",
+      "244",
+      "0",
+      "run381594_ls1000_streamDQMGPUvsCPU_pid1801423.dat",
+      "75258329",
+      "",
+      "3959900531",
+      "",
+      "DAT",
+      "0"
+   ],
+   "definition" : "./run381594/output_1801423.jsd",
+   "source" : "lxplus800.cern.ch_1801423"
+}
