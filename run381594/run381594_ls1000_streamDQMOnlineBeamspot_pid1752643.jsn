@@ -1,0 +1,16 @@
+{
+   "data" : [
+      "1284",
+      "444",
+      "0",
+      "run381594_ls1000_streamDQMOnlineBeamspot_pid1752643.dat",
+      "2388834",
+      "",
+      "173522927",
+      "",
+      "DAT",
+      "0"
+   ],
+   "definition" : "./run381594/output_1752643.jsd",
+   "source" : "lxplus800.cern.ch_1752643"
+}
