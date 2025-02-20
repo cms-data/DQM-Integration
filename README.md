@@ -6,6 +6,11 @@ Repository to store input files for the CMSSW [DQM/Integration](https://github.c
 For the moment this repository is used to store streamer files that are needed as input for the unitTest.
 
 Currently the unitTest that make use of input streamer files are:
+* the `onlinebeammonitor_dqm_sourceclient_cfg.py` client, it reads the `streamDQM` (prepared such that only the hltOnlineBeamSpot is present in the file) streamer files regenerated from run 381594 (from 2024E pp run [OMS link](https://cmsoms.cern.ch/cms/runs/report?cms_run=381594&cms_run_sequence=GLOBAL-RUN)):
+   ```
+   run381594_ls1000_streamDQM_pid1388480.dat
+   run381594_ls1000_streamDQM_pid1388480.jsn
+   ```
 * the `beamhlt_dqm_sourceclient-live_cfg.py` client, it reads the `streamDQMOnlineBeamspot` streamer files regenerated from run 381594 (from 2024E pp run [OMS link](https://cmsoms.cern.ch/cms/runs/report?cms_run=381594&cms_run_sequence=GLOBAL-RUN)):
    ```
    run381594_ls1000_streamDQMOnlineBeamspot_pid1752643.dat
