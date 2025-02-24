@@ -1,0 +1,16 @@
+{
+   "data" : [
+      "1000",
+      "1000",
+      "0",
+      "run381594_ls1000_streamDQM_pid1388480.dat",
+      "952828",
+      "",
+      "3265674923",
+      "",
+      "DAT",
+      "0"
+   ],
+   "definition" : "./run381594/output_1388480.jsd",
+   "source" : "lxplus936.cern.ch_1388480"
+}
