@@ -23,8 +23,8 @@ Currently the unitTest that make use of input streamer files are:
    ```
 * the `sistrip_approx_dqm_sourceclient-live_cfg.py` reads the `streamDQM` streamer files regenerated from run 362321 (from 2022 HI run, [OMS link](https://cmsoms.cern.ch/cms/runs/report?cms_run=362321&cms_run_sequence=GLOBAL-RUN), though they have been re-HLT'ed, see for more details at [CMSHLT-2884](https://its.cern.ch/jira/browse/CMSHLT-2884)):
    ```
-   run362321/run362321_ls0231_streamHIDQM_pid1816953.dat
-   run362321/run362321_ls0231_streamHIDQM_pid1816953.jsn
+   run362321/run362321_ls0231_streamHIDQM_pid276864.dat
+   run362321/run362321_ls0231_streamHIDQM_pid276864.jsn
    ```
 
 ## Recipe to regenerate Streamer files (when streamer layout gets broken)
