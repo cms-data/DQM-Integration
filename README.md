@@ -26,7 +26,12 @@ Currently the unitTest that make use of input streamer files are:
    run362321/run362321_ls0231_streamHIDQM_pid276864.dat
    run362321/run362321_ls0231_streamHIDQM_pid276864.jsn
    ```
+* the `scouting_dqm_sourceclient-live_cfg.py` reads the `streamDQMOnlineScouting` streamer files generated from run 392642 (from Run2025C pp run, [OMS link](https://cmsoms.cern.ch/cms/runs/report?cms_run=392642&cms_run_sequence=GLOBAL-RUN):
+   ```
+   run392642/run392642_ls0174_streamDQMOnlineScouting_pid1152594.dat
+   run392642/run392642_ls0174_streamDQMOnlineScouting_pid1152594.jsn
 
+   ```
 ## Recipe to regenerate Streamer files (when streamer layout gets broken)
 
 In repsonse to issue https://github.com/cms-sw/cmssw/issues/45224, streamer files have been regenerated in a release that contains https://github.com/cms-sw/cmssw/pull/44978 (in this case `CMSSW_14_0_9_MULTIARCHS`.
