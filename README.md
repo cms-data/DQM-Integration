@@ -152,12 +152,12 @@ INPUTFILES="\
     root://eoscms.cern.ch//store/data/Run2025C/EphemeralHLTPhysics7/RAW/v1/000/392/642/00000/a7b5720c-aa47-4783-b838-dce20b7130ee.root"
 rm -rf run${RUNNUMBER}*
 
-# run on 100 events of given LS, without event limits per input file
-convertToRaw -l 100 -r ${RUNNUMBER}:${LUMISECTION} -o . -- ${INPUTFILES}
+# run on 5000 events of given LS, with 1000 event limits per input file
+convertToRaw -l 5000 -f 1000 -r ${RUNNUMBER}:${LUMISECTION} -o . -- ${INPUTFILES}
 
 tmpfile=$(mktemp)
 
-hltConfigFromDB --configName /users/jprendi/ScoutingOnlineDQM/Test0/HLT/V2 > dump.py
+hltConfigFromDB --configName /users/jprendi/ScoutingOnlineDQM/Test0/HLT/V4 > dump.py
 
 
 cat <<@EOF >> dump.py
