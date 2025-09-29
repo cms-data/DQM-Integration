@@ -1,0 +1,17 @@
+{
+   "data" : [
+      "100",
+      "100",
+      "0",
+      "0",
+      "run362321_ls0231_streamHIDQM_pid1736357.dat",
+      "29146589",
+      "",
+      "3559879391",
+      "",
+      "DAT",
+      "0"
+   ],
+   "definition" : "./run362321/output_1736357.jsd",
+   "source" : "cudaui2.pi.infn.it_1736357"
+}
