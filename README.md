@@ -196,13 +196,12 @@ The streamer files for the `streamDQMGPUVsCPU` were prepared using the following
 RUNNUMBER=397813
 LUMISECTION=131
 
-# cmsrel CMSSW_15_1_X_2025-10-22-2300
-# cd CMSSW_15_1_X_2025-10-22-2300/src/
+# cmsrel CMSSW_16_0_X_2025-11-23-2300
+# cd CMSSW_16_0_X_2025-11-23-2300/src/
 # cmsenv
-# git cms-addpkg DataFormats/TrackSoA DataFormats/TrackingRecHitSoA DQM/Integration
-# git remote add AdrianoDee git@github.com:AdrianoDee/cmssw.git; git fetch AdrianoDee
-# git cherry-pick 1eb24e6536182945d6f7ac55fedc023a9f0d4410
-# git cherry-pick 9a3ef9ae14f452aa15d3f868b97c63f6b996b1dc
+# git cms-addpkg DataFormats/TrackingRecHitSoA
+# git remote add fwyzard git@github.com:fwyzard/cmssw.git; git fetch fwyzard
+# git cherry-pick 9f90f7e952c86dd527fc5d373973ce93ca78217f
 # cmsenv
 # scram b
 
@@ -230,18 +229,15 @@ process.GlobalTag.globaltag = cms.string( "150X_dataRun3_HLT_v1" )
 # # to run using the same HLT prescales as used online in LS 1000
 # process.PrescaleService.forceDefault = True
 
-from HLTrigger.Configuration.common import *
-def customizeHLTFor49149(process):
-    ca_producers_pp = ['CAHitNtupletAlpakaPhase1@alpaka','alpaka_serial_sync::CAHitNtupletAlpakaPhase1']
-    for ca_producer in ca_producers_pp:
-        for prod in producers_by_type(process, ca_producer):
-            if hasattr(prod, 'geometry'):
-                g = getattr(prod, 'geometry')
-                g.startingPairs = cms.vuint32( [i for i in range(8)] + [i for i in range(13,19)])
-                setattr(prod, 'geometry', g)
-    return process
+# customization for the menu
+from HLTrigger.Configuration.customizeHLTforCMSSW import *
+process = customizeHLTfor48921(process)
 
-process = customizeHLTFor49149(process)
+## just output the GPU vs CPU output
+streamPaths = [foo for foo in process.endpaths_() if foo.endswith('Output')]
+streamPaths.remove('DQMGPUvsCPUOutput')
+for foo in streamPaths:
+    process.__delattr__(foo)
 @EOF
 edmConfigDump "${tmpfile}" > hlt.py
 
@@ -252,13 +248,30 @@ job_pid=$(cat cmsrun.pid)
 echo "cmsRun is running with PID: $job_pid"
 
 # remove input files to save space
-rm -f run397813/run397813_ls0*_index*.*
+rm -f run${RUNNUMBER}/run${RUNNUMBER}_ls0*_index*.*
 
 # prepare the files by concatenating the .ini and .dat files
 mkdir -p prepared
-cat run397813/run397813_ls0000_streamDQMGPUvsCPU_pid${job_pid}.ini run397813/run397813_ls0131_streamDQMGPUvsCPU_pid${job_pid}.dat > prepared/run397813_ls0131_streamDQMGPUvsCPU_pid${job_pid}.dat
-cp run397813/run397813_ls0131_streamDQMGPUvsCPU_pid${job_pid}.jsn prepared/run397813_ls0131_streamDQMGPUvsCPU_pid${job_pid}.jsn
-# manually edit to remove the extra 0 in the json file.
+
+cat run${RUNNUMBER}/run${RUNNUMBER}_ls0000_streamDQMGPUvsCPU_pid${job_pid}.ini run${RUNNUMBER}/run${RUNNUMBER}_ls0${LUMISECTION}_streamDQMGPUvsCPU_pid${job_pid}.dat > prepared/run${RUNNUMBER}_ls0${LUMISECTION}_streamDQMGPUvsCPU_pid${job_pid}.dat
+cp run${RUNNUMBER}/run${RUNNUMBER}_ls0${LUMISECTION}_streamDQMGPUvsCPU_pid${job_pid}.jsn prepared/run${RUNNUMBER}_ls0${LUMISECTION}_streamDQMGPUvsCPU_pid${job_pid}_prep.jsn
+
+# now remove the extra 0
+
+input="prepared/run${RUNNUMBER}_ls0${LUMISECTION}_streamDQMGPUvsCPU_pid${job_pid}_prep.jsn"
+output="prepared/run${RUNNUMBER}_ls0${LUMISECTION}_streamDQMGPUvsCPU_pid${job_pid}.jsn"
+
+jq '
+  .data as $d |
+  .data = (
+    reduce range(0; $d|length) as $i ([];
+      if ($i > 0 and .[-1] == "0" and $d[$i] == "0")
+      then .
+      else . + [$d[$i]]
+      end
+    )
+  )
+' "$input" > "$output"
 ```
 
 ## Possible extenstions
