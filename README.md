@@ -26,10 +26,10 @@ Currently the unitTest that make use of input streamer files are:
    run362321/run362321_ls0231_streamHIDQM_pid276864.dat
    run362321/run362321_ls0231_streamHIDQM_pid276864.jsn
    ```
-* the `scouting_dqm_sourceclient-live_cfg.py` reads the `streamDQMOnlineScouting` streamer files generated from run 392642 (from Run2025C pp run, [OMS link](https://cmsoms.cern.ch/cms/runs/report?cms_run=392642&cms_run_sequence=GLOBAL-RUN)):
+* the `scouting_dqm_sourceclient-live_cfg.py` reads the `streamDQMOnlineScouting` streamer files generated from run 398183 (from Run2025G pp run, [OMS link](https://cmsoms.cern.ch/cms/runs/report?cms_run=398183&cms_run_sequence=GLOBAL-RUN)):
    ```
-   run392642/run392642_ls0174_streamDQMOnlineScouting_pid1152594.dat
-   run392642/run392642_ls0174_streamDQMOnlineScouting_pid1152594.jsn
+   run398183/run398183_ls0142_streamDQMOnlineScouting_pid2737183.dat
+   run398183/run398183_ls0142_streamDQMOnlineScouting_pid2737183.jsn
    ```
 ## Recipe to regenerate Streamer files (when streamer layout gets broken)
 
@@ -129,27 +129,19 @@ rm -f run362321/run362321_ls0*_index*.*
 ```
 
 The streamer files for the `streamDQMOnlineScouting` were prepared using the scouting specific menu:
-```bash
+```
 #!/bin/bash -ex
 
-# cmsrel CMSSW_15_0_4_patch1 
-# cd CMSSW_15_0_4_patch1/src
+# cmsrel CMSSW_16_1_X_2026-01-07-2300
+# cd CMSSW_16_1_X_2026-01-07-2300/src
 # cmsenv
 # scram b
 
-RUNNUMBER=392642 # 2025 EphemeralHLTPhysics
-LUMISECTION=174
+RUNNUMBER=398183 # 2025 EphemeralHLTPhysics
+LUMISECTION=142
 
 # LS 174 
-INPUTFILES="\
-    root://eoscms.cern.ch//store/data/Run2025C/EphemeralHLTPhysics0/RAW/v1/000/392/642/00000/06ac627c-f97b-40ed-a279-16fdcf990c2c.root 
-    root://eoscms.cern.ch//store/data/Run2025C/EphemeralHLTPhysics1/RAW/v1/000/392/642/00000/8ec096b9-1293-4ee7-8e27-369889a521ff.root 
-    root://eoscms.cern.ch//store/data/Run2025C/EphemeralHLTPhysics2/RAW/v1/000/392/642/00000/e39b2b26-9b68-40e7-8e2d-c259637ea5d3.root 
-    root://eoscms.cern.ch//store/data/Run2025C/EphemeralHLTPhysics3/RAW/v1/000/392/642/00000/5f25f30f-1372-4875-ac25-0f437f2590be.root 
-    root://eoscms.cern.ch//store/data/Run2025C/EphemeralHLTPhysics4/RAW/v1/000/392/642/00000/ddcb337e-3536-4361-b69a-02ba755b9eb0.root 
-    root://eoscms.cern.ch//store/data/Run2025C/EphemeralHLTPhysics5/RAW/v1/000/392/642/00000/e7512b2b-d00a-4d71-924d-9563c2b36c18.root 
-    root://eoscms.cern.ch//store/data/Run2025C/EphemeralHLTPhysics6/RAW/v1/000/392/642/00000/7dd68eaf-bb9b-456e-9318-961c3903c84a.root 
-    root://eoscms.cern.ch//store/data/Run2025C/EphemeralHLTPhysics7/RAW/v1/000/392/642/00000/a7b5720c-aa47-4783-b838-dce20b7130ee.root"
+INPUTFILES="root://eoscms.cern.ch//store/data/Run2025G/EphemeralHLTPhysics0/RAW/v1/000/398/183/00000/002bbd0c-b9ed-4758-b7a6-e2e13149ca34.root"
 rm -rf run${RUNNUMBER}*
 
 # run on 5000 events of given LS, with 1000 event limits per input file
@@ -157,8 +149,7 @@ convertToRaw -l 5000 -f 1000 -r ${RUNNUMBER}:${LUMISECTION} -o . -- ${INPUTFILES
 
 tmpfile=$(mktemp)
 
-hltConfigFromDB --configName /users/jprendi/ScoutingOnlineDQM/Test0/HLT/V4 > dump.py
-
+hltConfigFromDB --configName /users/jprendi/ScoutingOnlineDQM/Test0/HLT/V7 > dump.py
 
 cat <<@EOF >> dump.py
 process.load("run${RUNNUMBER}_cff")
@@ -168,7 +159,6 @@ process.load('FWCore.MessageLogger.MessageLogger_cfi')
 
 process.GlobalTag.globaltag = cms.string('150X_dataRun3_HLT_v1')
 
-
 process.options.numberOfThreads = 32
 process.options.numberOfStreams = 32
 
@@ -177,17 +167,35 @@ process.options.wantSummary = True
 
 edmConfigDump dump.py > hlt.py
 
-
 bash -c 'echo $$ > cmsrun.pid; exec cmsRun hlt.py &> hlt.log'
 job_pid=$(cat cmsrun.pid)
 echo "cmsRun is running with PID: $job_pid"
 
 # remove input files to save space
-rm -f run392642/run392642_ls0*_index*.*
+rm -f run${RUNNUMBER}/run${RUNNUMBER}_ls0*_index*.*
 
 # prepare the files by concatenating the .ini and .dat files
 mkdir -p prepared
-cat run392642/run392642_ls0000_streamDQMOnlineScouting_pid${job_pid}.ini run392642/run392642_ls0174_streamDQMOnlineScouting_pid${job_pid}.dat > prepared/run392642_ls0174_streamDQMOnlineScouting_pid${job_pid}.dat
+cat run${RUNNUMBER}/run${RUNNUMBER}_ls0000_streamDQMOnlineScouting_pid${job_pid}.ini run${RUNNUMBER}/run${RUNNUMBER}_ls0${LUMISECTION}_streamDQMOnlineScouting_pid${job_pid}.dat > prepared/run${RUNNUMBER}_ls0${LUMISECTION}_streamDQMOnlineScouting_pid${job_pid}.dat
+cp run${RUNNUMBER}/run${RUNNUMBER}_ls0${LUMISECTION}_streamDQMOnlineScouting_pid${job_pid}.jsn prepared/run${RUNNUMBER}_ls0${LUMISECTION}_streamDQMOnlineScouting_pid${job_pid}_prep.jsn
+
+# now remove the extra 0
+input="prepared/run${RUNNUMBER}_ls0${LUMISECTION}_streamDQMOnlineScouting_pid${job_pid}_prep.jsn"
+output="prepared/run${RUNNUMBER}_ls0${LUMISECTION}_streamDQMOnlineScouting_pid${job_pid}.jsn"
+
+jq '
+  .data as $d |
+  .data = (
+    reduce range(0; $d|length) as $i ([];
+      if ($i > 0 and .[-1] == "0" and $d[$i] == "0")
+      then .
+      else . + [$d[$i]]
+      end
+    )
+  )
+' "$input" > "$output"
+
+rm -fr run398183* hlt.* cmsrun.pid dump.py __pycache__
 ```
 
 The streamer files for the `streamDQMGPUVsCPU` were prepared using the following script:

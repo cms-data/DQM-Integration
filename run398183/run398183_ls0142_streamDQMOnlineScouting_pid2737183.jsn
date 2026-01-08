@@ -1,0 +1,16 @@
+{
+  "data": [
+    "1442",
+    "399",
+    "0",
+    "run398183_ls0142_streamDQMOnlineScouting_pid2737183.dat",
+    "12121892",
+    "",
+    "635613091",
+    "",
+    "DAT",
+    "0"
+  ],
+  "definition": "./run398183/output_2737183.jsd",
+  "source": "lxplus809.cern.ch_2737183"
+}
