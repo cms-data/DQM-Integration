@@ -16,10 +16,10 @@ Currently the unitTest that make use of input streamer files are:
    run381594/run381594_ls1000_streamDQMOnlineBeamspot_pid1752643.dat
    run381594/run381594_ls1000_streamDQMOnlineBeamspot_pid1752643.jsn
    ```
-* the `ecalgpu_dqm_sourceclient-live_cfg.py`, `hcalgpu_dqm_sourceclient-live_cfg.py`, `pixelgpu_dqm_sourceclient-live_cfg.py` and `pfgpu_dqm_sourceclient-live_cfg.py` read the `streamDQMGPUvsCPU` streamer files regenerated from run 397813 (from Run2025G pp run [OMS link](https://cmsoms.cern.ch/cms/runs/report?cms_run=397813&cms_run_sequence=GLOBAL-RUN)):
+* the `ecalgpu_dqm_sourceclient-live_cfg.py`, `hcalgpu_dqm_sourceclient-live_cfg.py`, `pixelgpu_dqm_sourceclient-live_cfg.py` and `pfgpu_dqm_sourceclient-live_cfg.py` read the `streamDQMGPUvsCPU` streamer files regenerated from run 398183  (from Run2025G pp run [OMS link](https://cmsoms.cern.ch/cms/runs/report?cms_run=398183&cms_run_sequence=GLOBAL-RUN)):
    ```
-   run397813/run397813_ls0131_streamDQMGPUvsCPU.dat
-   run397813/run397813_ls0131_streamDQMGPUvsCPU.jsn
+   run398183_ls0142_streamDQMGPUvsCPU_pid3119228.dat
+   run398183_ls0142_streamDQMGPUvsCPU_pid3119228.jsn
    ```
 * the `sistrip_approx_dqm_sourceclient-live_cfg.py` reads the `streamDQM` streamer files regenerated from run 362321 (from 2022 HI run, [OMS link](https://cmsoms.cern.ch/cms/runs/report?cms_run=362321&cms_run_sequence=GLOBAL-RUN), though they have been re-HLT'ed, see for more details at [CMSHLT-2884](https://its.cern.ch/jira/browse/CMSHLT-2884)):
    ```
@@ -129,7 +129,7 @@ rm -f run362321/run362321_ls0*_index*.*
 ```
 
 The streamer files for the `streamDQMOnlineScouting` were prepared using the scouting specific menu:
-```
+```bash
 #!/bin/bash -ex
 
 # cmsrel CMSSW_16_1_X_2026-01-07-2300
@@ -195,32 +195,29 @@ jq '
   )
 ' "$input" > "$output"
 
-rm -fr run398183* hlt.* cmsrun.pid dump.py __pycache__
+rm -fr $input
+rm -fr run${RUNNUMBER}* hlt.* cmsrun.pid dump.py __pycache__
+mv prepared run${RUNNUMBER}
 ```
 
 The streamer files for the `streamDQMGPUVsCPU` were prepared using the following script:
 ```bash
 #!/bin/bash -ex
-RUNNUMBER=397813
-LUMISECTION=131
+RUNNUMBER=398183 # 2025 EphemeralHLTPhysics
+LUMISECTION=142
 
-# cmsrel CMSSW_16_0_X_2025-11-23-2300
-# cd CMSSW_16_0_X_2025-11-23-2300/src/
+# cmsrel CMSSW_16_1_X_2026-01-21-2300 
+# cd CMSSW_16_1_X_2026-01-21-2300/src/
 # cmsenv
-# git cms-addpkg DataFormats/TrackingRecHitSoA
-# git remote add fwyzard git@github.com:fwyzard/cmssw.git; git fetch fwyzard
-# git cherry-pick 9f90f7e952c86dd527fc5d373973ce93ca78217f
-# cmsenv
-# scram b
 
-INPUTFILE=root://eoscms.cern.ch//eos/cms/store/express/Run2025F/ExpressPhysics/FEVT/Express-v2/000/397/813/00000/f95a79f9-18ef-48f1-951a-2ae78c1a107f.root
+INPUTFILE="root://eoscms.cern.ch//store/data/Run2025G/EphemeralHLTPhysics0/RAW/v1/000/398/183/00000/002bbd0c-b9ed-4758-b7a6-e2e13149ca34.root"
 rm -rf run${RUNNUMBER}*
 
-# run on 100 events of LS 131, with 100 events per input file
-convertToRaw -f 100 -l 100 -r ${RUNNUMBER}:${LUMISECTION} -o . -- "${INPUTFILE}"
+# run on 500 events of LS, with 500 events per input file
+convertToRaw -f 25 -l 25 -r ${RUNNUMBER}:${LUMISECTION} -o . -- "${INPUTFILE}"
 
 tmpfile=$(mktemp)
-hltConfigFromDB --configName /users/musich/tests/dev/CMSSW_15_1_0/CMSHLT-3147/GRun > "${tmpfile}"
+hltConfigFromDB --configName /dev/CMSSW_16_0_0/GRun/V7  > "${tmpfile}"
 cat <<@EOF >> "${tmpfile}"
 process.load("run${RUNNUMBER}_cff")
 
@@ -239,7 +236,8 @@ process.GlobalTag.globaltag = cms.string( "150X_dataRun3_HLT_v1" )
 
 # customization for the menu
 from HLTrigger.Configuration.customizeHLTforCMSSW import *
-process = customizeHLTfor48921(process)
+process = customizeHLTfor49799(process)
+process = customizeHLTfor49852(process)
 
 ## just output the GPU vs CPU output
 streamPaths = [foo for foo in process.endpaths_() if foo.endswith('Output')]
@@ -280,6 +278,10 @@ jq '
     )
   )
 ' "$input" > "$output"
+
+rm -fr $input
+rm -fr run${RUNNUMBER}* hlt.* cmsrun.pid dump.py __pycache__
+mv prepared run${RUNNUMBER}
 ```
 
 ## Possible extenstions
