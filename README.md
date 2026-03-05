@@ -80,34 +80,38 @@ While the following script for the HIon data:
 ```bash
 #!/bin/bash -ex
 
-# cmsrel CMSSW_14_0_9_MULTIARCHS
-# cd CMSSW_14_0_9_MULTIARCHS/src
+# cmsrel CMSSW_16_1_X_2026-03-03-2300
+# cd CMSSW_16_1_X_2026-03-03-2300/src
 # cmsenv
 # scram b
 
 # run 362321, LSs 231-232
+
+RUNNUMBER=362321
+LUMISECTION=231
+
 INPUTFILE=root://eoscms.cern.ch//eos/cms/store/user/cmsbuild//store/hidata/HIRun2022A/HITestRaw0/RAW/v1/000/362/321/00000/f467ee64-fc64-47a6-9d8a-7ca73ebca2bd.root
 
-HLTMENU=/dev/CMSSW_14_0_0/HIon/V141
+HLTMENU=/dev/CMSSW_16_0_0/HIon/V31
 
-rm -rf run362321*
+rm -rf run${RUNNUMBER}*
 
 # run on 100 events of LS 231, with 100 events per input file
-convertToRaw -f 100 -l 100 -r 362321:231 -s rawDataRepacker -o . -- "${INPUTFILE}"
+convertToRaw -f 100 -l 100 -r ${RUNNUMBER}:${LUMISECTION} -s rawDataRepacker -o . -- "${INPUTFILE}"
 
-tmpfile=$(mktemp)
+tmpfile=tmp.py
 hltConfigFromDB --configName "${HLTMENU}" > "${tmpfile}"
 sed -i 's|process = cms.Process( "HLT" )|from Configuration.Eras.Era_Run3_cff import Run3\nprocess = cms.Process( "HLT", Run3 )|g' "${tmpfile}"
 cat <<@EOF >> "${tmpfile}"
-process.load('run362321_cff')
-process.hltOnlineBeamSpotESProducer.timeThreshold = int(1e6)
+process.load("run${RUNNUMBER}_cff")
+#process.hltOnlineBeamSpotESProducer.timeThreshold = int(1e6)
 
 # override the GlobalTag, connection string and pfnPrefix
 from Configuration.AlCa.GlobalTag import GlobalTag as customiseGlobalTag
 process.GlobalTag = customiseGlobalTag(
     process.GlobalTag,
-    globaltag = "140X_dataRun3_HLT_v3",
-    conditions = "L1Menu_CollisionsHeavyIons2023_v1_1_5_xml,L1TUtmTriggerMenuRcd,frontier://FrontierProd/CMS_CONDITIONS,,9999-12-31 23:59:59.000"
+    globaltag = "160X_dataRun3_HLT_v1",
+    conditions = "L1Menu_CollisionsHeavyIons2025_v1_0_3_xml,L1TUtmTriggerMenuRcd,frontier://FrontierProd/CMS_CONDITIONS,,9999-12-31 23:59:59.000"
 )
 
 # run the Full L1T emulator, then repack the data into a new RAW collection, to be used by the HLT
@@ -122,10 +126,37 @@ del process.PrescaleService
 @EOF
 edmConfigDump "${tmpfile}" > hlt.py
 
-cmsRun hlt.py &> hlt.log
+bash -c 'echo $$ > cmsrun.pid; exec cmsRun hlt.py &> hlt.log'
+job_pid=$(cat cmsrun.pid)
+echo "cmsRun is running with PID: $job_pid"
 
 # remove input files to save space
-rm -f run362321/run362321_ls0*_index*.*
+rm -f run${RUNNUMBER}/run${RUNNUMBER}_ls0*_index*.*
+
+# prepare the files by concatenating the .ini and .dat files
+mkdir -p prepared
+cat run${RUNNUMBER}/run${RUNNUMBER}_ls0000_streamHIDQM_pid${job_pid}.ini run${RUNNUMBER}/run${RUNNUMBER}_ls0${LUMISECTION}_streamHIDQM_pid${job_pid}.dat > prepared/run${RUNNUMBER}_ls0${LUMISECTION}_streamHIDQM_pid${job_pid}.dat
+cp run${RUNNUMBER}/run${RUNNUMBER}_ls0${LUMISECTION}_streamHIDQM_pid${job_pid}.jsn prepared/run${RUNNUMBER}_ls0${LUMISECTION}_streamHIDQM_pid${job_pid}_prep.jsn
+
+# now remove the extra 0
+input="prepared/run${RUNNUMBER}_ls0${LUMISECTION}_streamHIDQM_pid${job_pid}_prep.jsn"
+output="prepared/run${RUNNUMBER}_ls0${LUMISECTION}_streamHIDQM_pid${job_pid}.jsn"
+
+jq '
+  .data as $d |
+  .data = (
+    reduce range(0; $d|length) as $i ([];
+      if ($i > 0 and .[-1] == "0" and $d[$i] == "0")
+      then .
+      else . + [$d[$i]]
+      end
+    )
+  )
+' "$input" > "$output"
+
+rm -fr $input
+rm -fr run${RUNNUMBER}* hlt.* cmsrun.pid dump.py __pycache__
+mv prepared run${RUNNUMBER}
 ```
 
 The streamer files for the `streamDQMOnlineScouting` were prepared using the scouting specific menu:
