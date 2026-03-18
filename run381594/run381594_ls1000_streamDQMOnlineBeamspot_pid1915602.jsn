@@ -1,0 +1,16 @@
+{
+  "data": [
+    "443",
+    "443",
+    "0",
+    "run381594_ls1000_streamDQMOnlineBeamspot_pid1915602.dat",
+    "2369294",
+    "",
+    "3834414267",
+    "",
+    "DAT",
+    "0"
+  ],
+  "definition": "./run381594/output_1915602.jsd",
+  "source": "lxplus922.cern.ch_1915602"
+}
