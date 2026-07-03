@@ -18,8 +18,8 @@ Currently the unitTest that make use of input streamer files are:
    ```
 * the `ecalgpu_dqm_sourceclient-live_cfg.py`, `hcalgpu_dqm_sourceclient-live_cfg.py`, `pixelgpu_dqm_sourceclient-live_cfg.py` and `pfgpu_dqm_sourceclient-live_cfg.py` read the `streamDQMGPUvsCPU` streamer files regenerated from run 398183  (from Run2025G pp run [OMS link](https://cmsoms.cern.ch/cms/runs/report?cms_run=398183&cms_run_sequence=GLOBAL-RUN)):
    ```
-   run398183_ls0142_streamDQMGPUvsCPU_pid3119228.dat
-   run398183_ls0142_streamDQMGPUvsCPU_pid3119228.jsn
+   run398183/run398183_ls0142_streamDQMGPUvsCPU_pid973072.dat
+   run398183/run398183_ls0142_streamDQMGPUvsCPU_pid973072.jsn
    ```
 * the `sistrip_approx_dqm_sourceclient-live_cfg.py` reads the `streamDQM` streamer files regenerated from run 362321 (from 2022 HI run, [OMS link](https://cmsoms.cern.ch/cms/runs/report?cms_run=362321&cms_run_sequence=GLOBAL-RUN), though they have been re-HLT'ed, see for more details at [CMSHLT-2884](https://its.cern.ch/jira/browse/CMSHLT-2884)):
    ```

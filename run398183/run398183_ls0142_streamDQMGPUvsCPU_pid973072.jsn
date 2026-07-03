@@ -1,0 +1,16 @@
+{
+  "data": [
+    "25",
+    "25",
+    "0",
+    "run398183_ls0142_streamDQMGPUvsCPU_pid973072.dat",
+    "54705265",
+    "",
+    "1474064745",
+    "",
+    "DAT",
+    "0"
+  ],
+  "definition": "./run398183/output_973072.jsd",
+  "source": "lxplus945.cern.ch_973072"
+}
